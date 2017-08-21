@@ -4,10 +4,12 @@
 
 'use strict';
 
-import { AdService } from './adservice.js';
 
-let _slots = {}
+let _slots = {};
 
+/**
+ * Encapsulates the adunit, size and placement parameters of an ad slot.
+ */
 export class Slot {
     constructor(adUnit, width, height, divId) {
         this.adUnit = adUnit;
@@ -32,16 +34,23 @@ export class Slot {
         return this.divId;
     }
 
-    // create a slot and add it to the internal slot list.
+    /**
+     * Creates a slot and adds it to the internal slot list.
+     * @param adUnit {string}
+     * @param width {string}
+     * @param height {string}
+     * @param divId {string}
+     */
     static define(adUnit, width, height, divId) {
         _slots[divId] = new Slot(adUnit, width, height, divId);
     }
 
-    // find the given slot by divId, then fetch and render the ad in an iframe.
-    static display(divId, doc) {
-        let slot = _slots[divId];
-        if (slot) {
-            AdService.showAd(doc, slot);
-        }
+    /**
+     * Find and return the Slot by its divId.
+     * @param divId {string}
+     * @returns {Slot}
+     */
+    static find(divId) {
+        return _slots[divId];
     }
 }

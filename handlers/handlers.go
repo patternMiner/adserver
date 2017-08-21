@@ -22,17 +22,14 @@ type Ad struct {
 	Width string
 	Height string
 	Description string
+	Creative string
 }
 
-func DefaultHandler (w http.ResponseWriter, req *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	fmt.Fprintln(w, "/info\n\tShow context\n")
-	fmt.Fprintln(w, "/ad?adunit=ad-unit-1&width=560&height=315")
-}
-
+// Return the matching ads based on the requested adunit, size, and targeting parameters
 func AdHandler (w http.ResponseWriter, req *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
+	setAccessControlResponseHeaders(w, req)
+
 	query := req.URL.Query()
 	adUnit := query["adunit"]
 	adSet := context.AdSetByAdUnit(adUnit[0])
@@ -42,6 +39,7 @@ func AdHandler (w http.ResponseWriter, req *http.Request) {
 		ads = append(ads, Ad{Id: record[0], Url: record[1], Width: record[2], Height: record[3],
 			Description: record[4]})
 	}
+
 	data, err := json.Marshal(Response{Items: ads})
 	if err != nil {
 		fmt.Fprintln(w, err)
@@ -50,7 +48,8 @@ func AdHandler (w http.ResponseWriter, req *http.Request) {
 }
 
 func InfoHandler(w http.ResponseWriter, req *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
+	setAccessControlResponseHeaders(w, req)
+
 	fmt.Fprintln(w, "Ads")
 	for id, ad := range context.AdsMap {
 		fmt.Fprintf(w, "%2s: %s\n", id, ad)
@@ -62,4 +61,14 @@ func InfoHandler(w http.ResponseWriter, req *http.Request) {
 		fmt.Fprintf(w, "%s: %s\n", adUnit, ads)
 	}
 	fmt.Fprintln(w)
+}
+
+// Set access control response headers, only when the origin is known.
+func setAccessControlResponseHeaders (w http.ResponseWriter, req *http.Request) {
+	if origin := req.Header.Get("Origin"); origin != "" {
+		w.Header().Set("Access-Control-Allow-Origin", origin)
+		w.Header().Set("Access-Control-Allow-Methods", "GET, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers",
+			"Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+	}
 }

@@ -4,9 +4,26 @@
 
 'use strict';
 
-const AD_URL = 'http://localhost:8080/ad';
+/** @define {string} */
+var PROTOCOL = 'http';
 
+/** @define {string} */
+var DOMAIN_NAME = 'localhost';
+
+/** @define {string} */
+var PORT = '8080';
+
+/** @define {string} */
+var SERVICE_NAME = 'ad';
+
+/**
+ * Service to asynchronously fetch and render ad creatives based on adunit, size, and targeting parameters.
+ */
 export class AdService {
+    /**
+     * Fetches and renders the ad creative in an iframe on the given doc.
+     * The ad creative is fetched based on the adunit, size, and targeting data specific to the given slot.
+     */
     static showAd(doc, slot) {
         let i = doc.createElement('iframe');
         i.scrolling = 'auto';
@@ -19,7 +36,6 @@ export class AdService {
             let jsonResponse = JSON.parse(responseText);
             if(jsonResponse['Items']) {
                 let ad = jsonResponse['Items'][0];
-                console.log(ad);
                 i.src = ad['Url'];
             }
         }
@@ -38,14 +54,19 @@ export class AdService {
                     }
                 };
                 xhr.open('GET', url, true);
-                xhr.send();
+                try {
+                    xhr.send();
+                } catch (e) {
+                    console.log(e);
+                }
             });
         }
 
         doc.getElementById(slot.getDivId()).appendChild(i);
 
-        let adUrl = `${AD_URL}?adunit=${slot.getAdUnit()}&width=${slot.getWidth()}&height=${slot.getHeight()}`;
-
-        fetchContent(adUrl).then(processContent, processContent);
+        // Format the ad fetch url, and kick off the asynchronous fetch of the creative.
+        let adUrl = `${PROTOCOL}://${DOMAIN_NAME}:${PORT}/${SERVICE_NAME}`,
+            parameters = `?adunit=${slot.getAdUnit()}&width=${slot.getWidth()}&height=${slot.getHeight()}`;
+        fetchContent(adUrl + parameters).then(processContent, processContent);
     }
 }
