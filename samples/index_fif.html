@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <title>FriendlyIFrame</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script async src="../client/adtag/dist/adtag_min.js"></script>
+        <script type="text/javascript">
+            var adtag = adtag || {};
+            adtag.queue = adtag.queue || [];
+        </script>
+        <script>
+            adtag.queue.push(function() {
+                adtag.defineSlot('ad-unit-1', 560, 315, 'slot-1');
+                adtag.defineSlot('ad-unit-2', 560, 315, 'slot-2');
+                adtag.defineSlot('ad-unit-3', 560, 315, 'slot-3');
+                adtag.defineSlot('ad-unit-4', 560, 315, 'slot-4');
+            });
+        </script>
+    </head>
+
+    <body>
+        <p>FriendlyIFrame</p>
+
+        <div id="slot-1">
+            <script>
+                adtag.queue.push(function() {adtag.display('slot-1')});
+            </script>
+        </div>
+
+        <div id="slot-2">
+            <script>
+                adtag.queue.push(function() {adtag.display('slot-2')});
+            </script>
+        </div>
+
+        <div id="slot-3">
+            <script>
+                adtag.queue.push(function() {adtag.display('slot-3')});
+            </script>
+        </div>
+
+        <div id="slot-4">
+            <script>
+                adtag.queue.push(function() {adtag.display('slot-4')});
+            </script>
+        </div>
+
+    </body>
+
+</html>

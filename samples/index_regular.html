@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <title>RegularIFrame</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script async src="../client/adtag/dist/adtag_min.js"></script>
+        <script type="text/javascript">
+            var adtag = adtag || {};
+            adtag.queue = adtag.queue || [];
+        </script>
+        <script>
+            adtag.queue.push(function() {
+                adtag.defineSlot('ad-unit-1', 560, 315, 'slot-1');
+                adtag.defineSlot('ad-unit-2', 560, 315, 'slot-2');
+                adtag.defineSlot('ad-unit-3', 560, 315, 'slot-3');
+                adtag.defineSlot('ad-unit-4', 560, 315, 'slot-4');
+            });
+        </script>
+    </head>
+
+    <body>
+        <p>RegularIFrame</p>
+
+        <div id="slot-1">
+            <iframe scrolling="auto" src="https://www.youtube.com/embed/B9XveQRpoeg" width="560" height="315"
+                    style="border: none;">
+            </iframe>
+        </div>
+
+        <div id="slot-2">
+            <iframe scrolling="auto" src="https://www.youtube.com/embed/fAc_6lGwA6Y" width="560" height="315"
+                    style="border: none;">
+            </iframe>
+        </div>
+
+        <div id="slot-3">
+            <iframe scrolling="auto" width="560" height="315"
+                    src="https://www.youtube.com/embed/videoseries?list=PLUCQDmykkht0CJLjvdIP4qiBGYNWtC0kK"
+                    style="border: none;">
+            </iframe>
+        </div>
+
+        <div id="slot-4">
+            <iframe scrolling="auto"  width="560" height="315"
+                    src="https://www.youtube.com/embed/videoseries?list=PLUCQDmykkht38XR0Ai7FMRlb0rqd8-RAQ"
+                    style="border: none;">
+            </iframe>
+        </div>
+
+     </body>
+
+</html>
