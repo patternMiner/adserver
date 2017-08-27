@@ -28,6 +28,9 @@ var (
 
 	// dictionary of ads by adunit
 	AdUnitAdsMap = make(StringSetMap)
+
+	// data fetcher task synchronization lock
+	wg sync.WaitGroup
 )
 
 // Fetches data records from the given file path
@@ -48,10 +51,11 @@ type DataFetcherTask struct {
 	path string
 }
 
-var wg sync.WaitGroup
-
 func (t DataFetcherTask) Run() {
-	defer wg.Done()
+	defer func() {
+		log.Printf("Done fetching: %s\n", t.path)
+		wg.Done()
+	}()
 	records, err := fetch(t.path)
 	if err != nil {
 		log.Printf("Error fetching %s: %s\n", t.path, err)
