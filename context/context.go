@@ -8,8 +8,11 @@ import (
 	"bufio"
 	"encoding/csv"
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
+	"github.com/patternMiner/async"
+	"sync"
 )
 
 const (
@@ -41,29 +44,44 @@ func fetch(path string) (records [][]string, err error) {
 	return
 }
 
+type DataFetcherTask struct {
+	path string
+	wg sync.WaitGroup
+}
+
+func (t DataFetcherTask) Run() {
+	defer t.wg.Done()
+	t.wg.Add(1)
+	records, err := fetch(t.path)
+	if err != nil {
+		log.Printf("Error fetching %s: %s\n", t.path, err)
+		return
+	}
+	switch t.path {
+	case ads_data:
+		for _, record := range records[1:] {
+			id := record[0]
+			AdsMap[id] = record
+		}
+		break
+	case adunit_ads_data:
+		for _, record := range records[1:] {
+			adunit_id := record[0]
+			ad_id := record[1]
+			AdUnitAdsMap.stringSet(adunit_id).append(ad_id)
+		}
+		break
+	}
+}
+
 // Initializes the context by fetching all data records into various maps.
 func InitContext() error {
+	async.StartTaskDispatcher(2)
+	var wg sync.WaitGroup
 	for _, path := range data_files {
-		records, err := fetch(path)
-		if err != nil {
-			return err
-		}
-		switch path {
-		case ads_data:
-			for _, record := range records[1:] {
-				id := record[0]
-				AdsMap[id] = record
-			}
-			break
-		case adunit_ads_data:
-			for _, record := range records[1:] {
-				adunit_id := record[0]
-				ad_id := record[1]
-				AdUnitAdsMap.stringSet(adunit_id).append(ad_id)
-			}
-			break
-		}
+		async.TaskQueue <- DataFetcherTask{path, wg}
 	}
+	wg.Wait()
 	return nil
 }
 

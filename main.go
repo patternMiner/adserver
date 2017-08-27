@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	_ "net/http/pprof"
 	"github.com/patternMiner/adserver/context"
 	"github.com/patternMiner/adserver/handlers"
 )
