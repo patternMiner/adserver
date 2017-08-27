@@ -10,3 +10,4 @@
     --compilation_level ADVANCED_OPTIMIZATIONS \
     --js src/plugins.js src/adservice.js src/slot.js src/main.js \
     --js_output_file dist/adtag_min.js
+
