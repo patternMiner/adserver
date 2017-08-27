@@ -46,12 +46,12 @@ func fetch(path string) (records [][]string, err error) {
 
 type DataFetcherTask struct {
 	path string
-	wg sync.WaitGroup
 }
 
+var wg sync.WaitGroup
+
 func (t DataFetcherTask) Run() {
-	defer t.wg.Done()
-	t.wg.Add(1)
+	defer wg.Done()
 	records, err := fetch(t.path)
 	if err != nil {
 		log.Printf("Error fetching %s: %s\n", t.path, err)
@@ -77,9 +77,9 @@ func (t DataFetcherTask) Run() {
 // Initializes the context by fetching all data records into various maps.
 func InitContext() error {
 	async.StartTaskDispatcher(2)
-	var wg sync.WaitGroup
+	wg.Add(len(data_files))
 	for _, path := range data_files {
-		async.TaskQueue <- DataFetcherTask{path, wg}
+		async.TaskQueue <- DataFetcherTask{path}
 	}
 	wg.Wait()
 	return nil
