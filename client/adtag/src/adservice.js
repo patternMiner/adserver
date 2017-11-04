@@ -5,7 +5,7 @@
 'use strict';
 
 /** @define {string} */
-var PROTOCOL = 'https';
+var PROTOCOL = 'http';
 
 /** @define {string} */
 var DOMAIN_NAME = 'localhost';
